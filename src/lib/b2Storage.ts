@@ -4,7 +4,7 @@ const keyId = import.meta.env.VITE_B2_KEY_ID;
 const applicationKey = import.meta.env.VITE_B2_APPLICATION_KEY;
 const endpoint = import.meta.env.VITE_B2_ENDPOINT;
 const bucketName = import.meta.env.VITE_B2_BUCKET_NAME;
-const region = import.meta.env.VITE_B2_REGION || "eu-central-003";
+const region = import.meta.env.VITE_B2_REGION || "";
 
 // Ensure endpoint has protocol
 const s3Endpoint = endpoint ? (endpoint.startsWith("http") ? endpoint : `https://${endpoint}`) : undefined;

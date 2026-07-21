@@ -106,8 +106,9 @@ service cloud.firestore {
 4. Copy the generated keys:
    - `keyID` -> `VITE_B2_KEY_ID`
    - `applicationKey` -> `VITE_B2_APPLICATION_KEY`
-   - `S3 Endpoint` (e.g. `s3.eu-central-003.backblazeb2.com`) -> `VITE_B2_ENDPOINT`
-   - `Region` (e.g. `eu-central-003`) -> `VITE_B2_REGION`
+   - `S3 Endpoint` (e.g. `s3.your-region.backblazeb2.com`) -> `VITE_B2_ENDPOINT`
+   - `Region` (e.g. `your-region`) -> `VITE_B2_REGION`
+
 
 ---
 
@@ -131,9 +132,9 @@ VITE_FIREBASE_APP_ID=1:1234567890:web:abcdef123456
 # =========================================
 VITE_B2_KEY_ID=003xxxxxxxxxxxxxxx
 VITE_B2_APPLICATION_KEY=K003xxxxxxxxxxxxxxxx
-VITE_B2_ENDPOINT=s3.eu-central-003.backblazeb2.com
+VITE_B2_ENDPOINT=s3.your-region.backblazeb2.com
 VITE_B2_BUCKET_NAME=bookmark-fireblaze-storage
-VITE_B2_REGION=eu-central-003
+VITE_B2_REGION=your-region
 ```
 
 ---
