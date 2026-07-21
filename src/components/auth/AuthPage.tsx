@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Link2, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { ALLOW_REGISTRATION } from '../../config/authConfig';
 
 export const AuthPage: React.FC = () => {
   const { signInEmail, signUpEmail } = useAuth();
@@ -16,6 +17,11 @@ export const AuthPage: React.FC = () => {
     e.preventDefault();
     setErrorMsg('');
 
+    if (isRegister && !ALLOW_REGISTRATION) {
+      setErrorMsg('Registration is currently disabled.');
+      return;
+    }
+
     if (isRegister && password !== confirmPassword) {
       setErrorMsg('Passwords do not match.');
       return;
@@ -24,7 +30,7 @@ export const AuthPage: React.FC = () => {
     setLoading(true);
 
     try {
-      if (isRegister) {
+      if (isRegister && ALLOW_REGISTRATION) {
         await signUpEmail(email, password);
       } else {
         await signInEmail(email, password);
@@ -65,33 +71,35 @@ export const AuthPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex bg-[#121417] p-1 rounded-2xl border border-[#26282f]">
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegister(false);
-              setErrorMsg('');
-            }}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
-              !isRegister ? 'bg-purple-600 text-white shadow-lg shadow-purple-950/50' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegister(true);
-              setErrorMsg('');
-            }}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
-              isRegister ? 'bg-purple-600 text-white shadow-lg shadow-purple-950/50' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Create Account
-          </button>
-        </div>
+        {/* Tab Switcher (Only if Registration is Allowed) */}
+        {ALLOW_REGISTRATION && (
+          <div className="flex bg-[#121417] p-1 rounded-2xl border border-[#26282f]">
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegister(false);
+                setErrorMsg('');
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+                !isRegister ? 'bg-purple-600 text-white shadow-lg shadow-purple-950/50' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegister(true);
+                setErrorMsg('');
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+                isRegister ? 'bg-purple-600 text-white shadow-lg shadow-purple-950/50' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+        )}
 
         {/* Error Notification */}
         {errorMsg && (

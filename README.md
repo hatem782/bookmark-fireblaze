@@ -135,7 +135,37 @@ VITE_B2_APPLICATION_KEY=K003xxxxxxxxxxxxxxxx
 VITE_B2_ENDPOINT=s3.your-region.backblazeb2.com
 VITE_B2_BUCKET_NAME=bookmark-fireblaze-storage
 VITE_B2_REGION=your-region
+
+# =========================================
+# APP & ACCESS CONTROL (Optional)
+# =========================================
+# Set to 'true' to allow public user registration. Defaults to 'false' (Personal / Private Mode).
+VITE_ENABLE_REGISTRATION=false
 ```
+
+---
+
+## 🔒 Access Control & Registration Toggle
+
+By default, **public user registration is disabled**. Bookmark Studio is configured as a personal project for private deployment, meaning only existing accounts can log in and the "Create Account" registration tab is hidden.
+
+### Enabling Registration (Public Mode)
+
+If you wish to make the application accessible to the public and allow anyone to create an account, you can enable registration in either of two easy ways:
+
+#### Option 1: Environment Variable (Recommended for Netlify / Vercel)
+Add `VITE_ENABLE_REGISTRATION=true` to your `.env` file or deployment settings:
+```env
+VITE_ENABLE_REGISTRATION=true
+```
+
+#### Option 2: Configuration File
+In [src/config/authConfig.ts](file:///e:/MyProjects/Bookmark/src/config/authConfig.ts), change `ALLOW_REGISTRATION` to `true`:
+```typescript
+export const ALLOW_REGISTRATION = true;
+```
+
+Once enabled, the **Create Account** tab will instantly reappear on the login screen.
 
 ---
 

@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { UserProfile } from '../types';
+import { ALLOW_REGISTRATION } from '../config/authConfig';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -51,6 +52,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUpEmail = async (email: string, pass: string) => {
+    if (!ALLOW_REGISTRATION) {
+      throw new Error("Registration is disabled for this instance.");
+    }
     try {
       await createUserWithEmailAndPassword(auth, email, pass);
     } catch (error) {
