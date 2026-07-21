@@ -21,7 +21,7 @@ Built with **Vite**, **React**, **TypeScript**, **Tailwind CSS**, **Shadcn UI**,
 ### 1. Why Firebase? (Database & Authentication)
 - **Zero Server Overhead**: Firebase provides serverless Authentication (Email/Password) and NoSQL Cloud Database (Firestore).
 - **Free Tier Friendly**: Firebase offers generous free limits (50,000 document reads & 20,000 writes/day), making it 100% free for personal link management.
-- **Easy Frontend Deployment**: Eliminates the need for a custom NodeJS or Python backend. The entire app is a static Single Page Application (SPA) deployable on **Vercel** or **Netlify** for free!
+- **Easy Frontend Deployment**: Eliminates the need for a custom NodeJS or Python backend. The app is a static Single Page Application (SPA) deployable on **Vercel** or **Netlify** for free!
 
 ### 2. Why Backblaze B2? (Cloud Image Storage)
 - **Free 10 GB Object Storage**: Backblaze B2 provides **10 GB of free cloud storage** with S3-compatible APIs.
@@ -56,13 +56,40 @@ Built with **Vite**, **React**, **TypeScript**, **Tailwind CSS**, **Shadcn UI**,
 5. Navigate to **Project Settings** (gear icon) > **General**:
    - Scroll down to *Your apps* and click the **Web icon (`</>`)**.
    - Register app name e.g. `bookmark-fireblaze-web`.
-   - Copy your Firebase config object values:
-     - `apiKey`
-     - `authDomain`
-     - `projectId`
-     - `storageBucket`
-     - `messagingSenderId`
-     - `appId`
+   - Copy your Firebase config object values (`apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`).
+
+---
+
+### 🛡️ Firestore Security Rules Setup (Fix Permission Error)
+
+To prevent `FirebaseError: Missing or insufficient permissions`, configure your Firestore rules to allow authenticated users to manage their own documents:
+
+1. In the Firebase Console sidebar, go to **Build > Firestore Database > Rules**.
+2. Replace the rules with:
+
+```javascript
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Allow users to manage their own groups
+    match /groups/{groupId} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Allow users to manage their own bookmarks
+    match /bookmarks/{bookmarkId} {
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+
+  }
+}
+```
+
+3. Click **Publish**.
 
 ---
 
@@ -77,10 +104,10 @@ Built with **Vite**, **React**, **TypeScript**, **Tailwind CSS**, **Shadcn UI**,
    - Access Type: **Read and Write**.
    - Click **Create Application Key**.
 4. Copy the generated keys:
-   - `keyID` -> `B2_KEY_ID`
-   - `applicationKey` -> `B2_APPLICATION_KEY`
-   - `S3 Endpoint` (e.g. `s3.eu-central-003.backblazeb2.com`) -> `B2_ENDPOINT`
-   - `Region` (e.g. `eu-central-003`) -> `B2_REGION`
+   - `keyID` -> `VITE_B2_KEY_ID`
+   - `applicationKey` -> `VITE_B2_APPLICATION_KEY`
+   - `S3 Endpoint` (e.g. `s3.eu-central-003.backblazeb2.com`) -> `VITE_B2_ENDPOINT`
+   - `Region` (e.g. `eu-central-003`) -> `VITE_B2_REGION`
 
 ---
 
@@ -99,14 +126,6 @@ VITE_FIREBASE_STORAGE_BUCKET=bookmark-fireblaze.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=1234567890
 VITE_FIREBASE_APP_ID=1:1234567890:web:abcdef123456
 
-# Fallback compatibility keys
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=bookmark-fireblaze.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=bookmark-fireblaze
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=bookmark-fireblaze.firebasestorage.app
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=1234567890
-NEXT_PUBLIC_FIREBASE_APP_ID=1:1234567890:web:abcdef123456
-
 # =========================================
 # BACKBLAZE B2 STORAGE CONFIGURATION
 # =========================================
@@ -115,13 +134,6 @@ VITE_B2_APPLICATION_KEY=K003xxxxxxxxxxxxxxxx
 VITE_B2_ENDPOINT=s3.eu-central-003.backblazeb2.com
 VITE_B2_BUCKET_NAME=bookmark-fireblaze-storage
 VITE_B2_REGION=eu-central-003
-
-# Fallback compatibility keys
-B2_KEY_ID=003xxxxxxxxxxxxxxx
-B2_APPLICATION_KEY=K003xxxxxxxxxxxxxxxx
-B2_ENDPOINT=s3.eu-central-003.backblazeb2.com
-B2_BUCKET_NAME=bookmark-fireblaze-storage
-B2_REGION=eu-central-003
 ```
 
 ---
@@ -162,11 +174,6 @@ Because Bookmark Fireblaze is a pure frontend Single Page Application (SPA), it 
 3. Set **Framework Preset** to `Vite`.
 4. Copy environment variables from `.env` into Vercel's **Environment Variables** settings.
 5. Click **Deploy**.
-
-### Deploying to Netlify:
-1. Drag and drop `dist/` folder or connect GitHub repo to [Netlify](https://netlify.com).
-2. Set Build Command to `npm run build` and Publish Directory to `dist`.
-3. Add Environment Variables in Netlify site configuration.
 
 ---
 

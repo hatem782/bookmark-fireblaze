@@ -9,7 +9,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  envPrefix: ['VITE_', 'NEXT_PUBLIC_', 'B2_'],
   server: {
     port: 3000,
     open: true,
