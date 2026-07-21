@@ -147,14 +147,33 @@ VITE_ENABLE_REGISTRATION=false
 
 ## 🔒 Access Control & Registration Toggle
 
-By default, **public user registration is disabled**. Bookmark Studio is configured as a personal project for private deployment, meaning only existing accounts can log in and the "Create Account" registration tab is hidden.
+By default, **public user registration is disabled in the UI**. Bookmark Studio is configured as a personal project for private deployment, meaning only existing accounts can log in and the "Create Account" registration tab is hidden on the login screen.
 
-### Enabling Registration (Public Mode)
+---
 
-If you wish to make the application accessible to the public and allow anyone to create an account, you can enable registration in either of two easy ways:
+### 🛡️ Complete Backend Lockdown (Recommended for Personal / Private Use)
+
+If you want to use the application exclusively for yourself (or create accounts for friends/family manually), you can lock down registration at the **backend API level**. 
+
+To **100% guarantee** that nobody can create an account—even by manipulating browser DevTools, console scripts, Postman, or cURL requests:
+
+1. Go to the [Firebase Console](https://console.firebase.google.com/).
+2. Select your project -> **Authentication**.
+3. Go to the **Settings** tab.
+4. Click on **User actions**.
+5. Uncheck **"Enable create (sign-up)"** (or toggle off user registration).
+6. Click **Save**.
+
+> 💡 **Tip for Friends & Family Access:** As the project administrator, you can manually create user accounts for yourself or friends anytime by going to **Firebase Console > Authentication > Users** and clicking **Add User**.
+
+---
+
+### 🌐 Enabling Public Registration (Public Mode)
+
+If you wish to open the application to the public and allow visitors to create their own accounts from the webpage, re-enable registration in either of two easy ways:
 
 #### Option 1: Environment Variable (Recommended for Netlify / Vercel)
-Add `VITE_ENABLE_REGISTRATION=true` to your `.env` file or deployment settings:
+Add `VITE_ENABLE_REGISTRATION=true` to your `.env` file or deployment environment settings:
 ```env
 VITE_ENABLE_REGISTRATION=true
 ```
@@ -165,7 +184,7 @@ In [src/config/authConfig.ts](file:///e:/MyProjects/Bookmark/src/config/authConf
 export const ALLOW_REGISTRATION = true;
 ```
 
-Once enabled, the **Create Account** tab will instantly reappear on the login screen.
+*(Note: If you turned off sign-ups in Firebase Console, make sure to re-enable "Enable create (sign-up)" under Firebase Authentication Settings as well).*
 
 ---
 
